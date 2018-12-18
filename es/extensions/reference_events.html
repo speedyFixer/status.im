@@ -206,6 +206,30 @@
 
     
     <div class="page-intro wrapper">
+<div class="search">
+    <input type="text" name="userSearch" id="userSearch" placeholder="Search...">
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/jquery.marcopolo.min.js" type="text/javascript"></script>
+    <script type="text/javascript" defer>
+    $('#userSearch').marcoPolo({
+        url: 'https://search.status.im/' + window.location.host + '/_search?size=5&_source=title,url&',
+        minChars: 3,
+        formatItem: function (data, $item) {
+        return data.title || data.url;
+        },
+        formatData: function (data) {
+        return data.hits.hits.map(function(obj) {
+            return obj._source;
+        });
+        },
+        onSelect: function (data, $item) {
+        window.location = data.url;
+        }
+    });
+    </script>
+</div>
+<div class="clear"></div>
+
   <header class="article-header">
     <h1 class="article-title" itemprop="name">Extension Reference - Events</h1>
     <a href="https://github.com/status-im/docs.status.im/edit/develop/source/extensions/reference_events.md" class="article-edit-link" title="Mejorar este documento">Edit on Github</a>
@@ -242,6 +266,14 @@
 <td>value :string</td>
 </tr>
 <tr>
+<td>json/parse</td>
+<td>value :string, on-result :event</td>
+</tr>
+<tr>
+<td>json/stringify</td>
+<td>value :string, on-result :event</td>
+</tr>
+<tr>
 <td>store/put</td>
 <td>key :string, value :string</td>
 </tr>
@@ -256,6 +288,38 @@
 <tr>
 <td>store/put</td>
 <td>key :string, value :string</td>
+</tr>
+<tr>
+<td>store/puts</td>
+<td>value :vector</td>
+</tr>
+<tr>
+<td>chat.command/set-parameter</td>
+<td>value :any</td>
+</tr>
+<tr>
+<td>chat.command/set-parameter-with-custom-params</td>
+<td>value :string, params :map</td>
+</tr>
+<tr>
+<td>chat.command/set-custom-parameter</td>
+<td>key :keyword, value :any</td>
+</tr>
+<tr>
+<td>chat.command/send-plaintext-message</td>
+<td>value :string</td>
+</tr>
+<tr>
+<td>chat.command/send-message</td>
+<td>params :map</td>
+</tr>
+<tr>
+<td>schedule/start</td>
+<td>interval :number, on-created :event, on-result :event</td>
+</tr>
+<tr>
+<td>schedule/cancel</td>
+<td>value :number</td>
 </tr>
 <tr>
 <td>http/get</td>
@@ -277,6 +341,14 @@
 <td>ethereum/call</td>
 <td>to :string, method? :string, params? :vector, on-result? :event</td>
 </tr>
+<tr>
+<td>ethereum/logs</td>
+<td>fromBlock? :string, toBlock? :string, address? :vector, topics? :vector, blockhash? :string, on-result  :event</td>
+</tr>
+<tr>
+<td>ethereum/resolve-ens</td>
+<td>name :string, on-result :event</td>
+</tr>
 </tbody>
 </table>
 <p>Example usage:</p>
@@ -285,7 +357,7 @@
 
               </div>
               <footer class="article-footer">
-                <time class="article-footer-updated" datetime="2018-12-07T09:15:09.522Z" itemprop="dateModified">Última actualización: 2018-12-07</time>
+                <time class="article-footer-updated" datetime="2018-12-18T03:39:13.080Z" itemprop="dateModified">Última actualización: 2018-12-18</time>
                 
               </footer>
             </div>

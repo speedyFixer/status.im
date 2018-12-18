@@ -206,6 +206,30 @@
 
     
     <div class="page-intro wrapper">
+<div class="search">
+    <input type="text" name="userSearch" id="userSearch" placeholder="Search...">
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/jquery.marcopolo.min.js" type="text/javascript"></script>
+    <script type="text/javascript" defer>
+    $('#userSearch').marcoPolo({
+        url: 'https://search.status.im/' + window.location.host + '/_search?size=5&_source=title,url&',
+        minChars: 3,
+        formatItem: function (data, $item) {
+        return data.title || data.url;
+        },
+        formatData: function (data) {
+        return data.hits.hits.map(function(obj) {
+            return obj._source;
+        });
+        },
+        onSelect: function (data, $item) {
+        window.location = data.url;
+        }
+    });
+    </script>
+</div>
+<div class="clear"></div>
+
   <header class="article-header">
     <h1 class="article-title" itemprop="name">Extension Types</h1>
     <a href="https://github.com/status-im/docs.status.im/edit/develop/source/extensions/extension_types.md" class="article-edit-link" title="Improve this doc">Edit on Github</a>
@@ -224,10 +248,10 @@
           <div class="article">
             <div class="inner">
               <div class="article-content" itemprop="articleBody">
-                <h1 id="Understand-All-the-Different-Typs" class="article-heading"><a href="#Understand-All-the-Different-Typs" class="headerlink" title="Understand All the Different Typs"></a>Understand All the Different Typs<a class="article-anchor" href="#Understand-All-the-Different-Typs" aria-hidden="true"></a></h1><p>Extension types are determined by the available <a href="https://dev-docs.status.im/extensions/concept_hook.html" target="_blank" rel="noopener">hooks</a>.</p>
-<p>The first hook supported by Status is the chat command.</p>
-<h1 id="Chat-Commands" class="article-heading"><a href="#Chat-Commands" class="headerlink" title="Chat Commands"></a>Chat Commands<a class="article-anchor" href="#Chat-Commands" aria-hidden="true"></a></h1><h2 id="Identifiers" class="article-heading"><a href="#Identifiers" class="headerlink" title="Identifiers"></a>Identifiers<a class="article-anchor" href="#Identifiers" aria-hidden="true"></a></h2><p>The root identifier for any chat command is <code>hooks/commands</code>. Use this to build a chat command extension.</p>
-<p>Each extension also requires a unique identifier, e.g. <code>hooks/commands.collectible</code>.</p>
+                <h1 id="Understand-All-the-Different-Typs" class="article-heading"><a href="#Understand-All-the-Different-Typs" class="headerlink" title="Understand All the Different Typs"></a>Understand All the Different Typs<a class="article-anchor" href="#Understand-All-the-Different-Typs" aria-hidden="true"></a></h1><p>Extension types are determined by the available <a href="https://docs.status.im/extensions/concept_hook.html" target="_blank" rel="noopener">hooks</a>.</p>
+<p>The first hooks supported by Status are <code>chat command</code> and <code>wallet settings</code>.</p>
+<h1 id="Chat-Command" class="article-heading"><a href="#Chat-Command" class="headerlink" title="Chat Command"></a>Chat Command<a class="article-anchor" href="#Chat-Command" aria-hidden="true"></a></h1><h2 id="Identifiers" class="article-heading"><a href="#Identifiers" class="headerlink" title="Identifiers"></a>Identifiers<a class="article-anchor" href="#Identifiers" aria-hidden="true"></a></h2><p>The root identifier for any chat command is <code>hooks/chat.command</code>. Use this to build a chat command extension.</p>
+<p>Each extension also requires a unique identifier, e.g. <code>hooks/chat.command.collectible</code>.</p>
 <p>In the case of a chat command, the unique identifier is what a user is required to type (e.g. <code>/collectible</code>) in order to execute a command within a chat.</p>
 <p>This unique ID must be <em>unique from all other command IDs</em>. It is recommended to use the DApp or company’s name in the ID to ensure this.</p>
 <h2 id="Properties" class="article-heading"><a href="#Properties" class="headerlink" title="Properties"></a>Properties<a class="article-anchor" href="#Properties" aria-hidden="true"></a></h2><p>Once declared, a chat command requires the following properties to be mapped:</p>
@@ -240,7 +264,7 @@
 <li><em>Optional</em>: <code>on-send</code> and <code>on-receive</code></li>
 </ul>
 <p>This is declared like so:</p>
-<pre><code>hooks/command.collectible
+<pre><code>hooks/chat.command.collectible
 {:description    &quot;Send collectible&quot;
 :scope            #{:personal-chats}
 :preview          [collectible-preview]
@@ -329,10 +353,23 @@
  :content-type command
  :content {:command-path [collectible #{:personal-chats}]
            :params {:collectible-id    &quot;CK&quot;}}}
-</code></pre>
+</code></pre><h1 id="Wallet-settings" class="article-heading"><a href="#Wallet-settings" class="headerlink" title="Wallet settings"></a>Wallet settings<a class="article-anchor" href="#Wallet-settings" aria-hidden="true"></a></h1><p>Wallet settings hook allow you to plug extra panels in the wallet. Those will be accessible via the wallet settings menu.</p>
+<p>To implement a wallet settings you will need to provide the following properties:</p>
+<ul>
+<li>label (the name that will be displayed in the wallet settings menu)</li>
+<li>view (the view that will be displayed fullscreen)</li>
+</ul>
+<pre><code> views/view
+ [text &quot;Hello&quot;]
+
+ hooks/wallet.settings.hello
+ {:label   &quot;Test wallet settings&quot;
+  :view    [view]}
+</code></pre><p>You can find a simple example <a href="https://status-im.github.io/pluto/try.html?hash=QmYnUj7v3UiP6X1YfRuhea5mXpjTGG1KKnCwFS4TKzKTpD" target="_blank" rel="noopener">here</a></p>
+
               </div>
               <footer class="article-footer">
-                <time class="article-footer-updated" datetime="2018-12-07T09:15:09.522Z" itemprop="dateModified">Last updated: 2018-12-07</time>
+                <time class="article-footer-updated" datetime="2018-12-18T03:39:13.080Z" itemprop="dateModified">Last updated: 2018-12-18</time>
                 <a href="syntax.html" class="article-footer-prev" title="Syntax"><i class="fa fa-chevron-left"></i><span>Prev</span></a><a href="../tutorials/extensions_chat_command.html" class="article-footer-next" title="Tutorial"><span>Next</span><i class="fa fa-chevron-right"></i></a>
               </footer>
             </div>

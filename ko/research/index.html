@@ -198,6 +198,30 @@
 
     
     <div class="page-intro wrapper">
+<div class="search">
+    <input type="text" name="userSearch" id="userSearch" placeholder="Search...">
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/jquery.marcopolo.min.js" type="text/javascript"></script>
+    <script type="text/javascript" defer>
+    $('#userSearch').marcoPolo({
+        url: 'https://search.status.im/' + window.location.host + '/_search?size=5&_source=title,url&',
+        minChars: 3,
+        formatItem: function (data, $item) {
+        return data.title || data.url;
+        },
+        formatData: function (data) {
+        return data.hits.hits.map(function(obj) {
+            return obj._source;
+        });
+        },
+        onSelect: function (data, $item) {
+        window.location = data.url;
+        }
+    });
+    </script>
+</div>
+<div class="clear"></div>
+
   <header class="docs-header">
     <div class="docs-intro">
       <h1>Research a Better Web</h1>
@@ -237,7 +261,7 @@
     <div id="content-inner">
       <aside id="sidebar" role="navigation">
   <div class="inner">
-    <strong class="sidebar-title">위스퍼</strong><a href="index.html" class="sidebar-link current">비밀을 알고 싶으신가요?</a><a href="extended_features.html" class="sidebar-link">확장된 기능</a><a href="dark_routing.html" class="sidebar-link">다크 라우팅</a><a href="whisper_pss.html" class="sidebar-link">PSS와 비교</a><a href="whisper_faqs.html" class="sidebar-link">위스퍼 FAQ</a><a href="secure_messaging_compendium.html" class="sidebar-link">보안 메시징 개요</a><a href="https://our.status.im/tag/research" class="sidebar-link">Research Blog</a><strong class="sidebar-title">연구 프로젝트</strong><a href="ulc_in_details.html" class="sidebar-link">Ultra Light Clients</a><a href="https://nimbus.status.im/" class="sidebar-link">님버스 (이더리움 2.0 클라이언트)</a><strong class="sidebar-title">Tutorials</strong><a href="../tutorials/whisper_basic_cli.html" class="sidebar-link">Whisper in Your CLI</a><a href="../tutorials/whisper_embark.html" class="sidebar-link">Whisper with Embark</a>
+    <strong class="sidebar-title">위스퍼</strong><a href="index.html" class="sidebar-link current">비밀을 알고 싶으신가요?</a><a href="extended_features.html" class="sidebar-link">확장된 기능</a><a href="dark_routing.html" class="sidebar-link">다크 라우팅</a><a href="whisper_pss.html" class="sidebar-link">PSS와 비교</a><a href="whisper_faqs.html" class="sidebar-link">위스퍼 FAQ</a><a href="secure_messaging_compendium.html" class="sidebar-link">보안 메시징 개요</a><a href="https://our.status.im/tag/research" class="sidebar-link">Research Blog</a><strong class="sidebar-title">연구 프로젝트</strong><a href="pfs.html" class="sidebar-link">Perfect Forward Secrecy</a><a href="ulc_in_details.html" class="sidebar-link">Ultra Light Clients</a><a href="https://nimbus.status.im/" class="sidebar-link">님버스 (이더리움 2.0 클라이언트)</a><strong class="sidebar-title">Tutorials</strong><a href="../tutorials/whisper_basic_cli.html" class="sidebar-link">Whisper in Your CLI</a><a href="../tutorials/whisper_embark.html" class="sidebar-link">Whisper with Embark</a>
   </div>
 </aside>
       <article class="article-container" itemscope="" itemtype="http://schema.org/Article">

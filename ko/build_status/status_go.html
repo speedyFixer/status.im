@@ -206,6 +206,30 @@
 
     
     <div class="page-intro wrapper">
+<div class="search">
+    <input type="text" name="userSearch" id="userSearch" placeholder="Search...">
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/jquery.marcopolo.min.js" type="text/javascript"></script>
+    <script type="text/javascript" defer>
+    $('#userSearch').marcoPolo({
+        url: 'https://search.status.im/' + window.location.host + '/_search?size=5&_source=title,url&',
+        minChars: 3,
+        formatItem: function (data, $item) {
+        return data.title || data.url;
+        },
+        formatData: function (data) {
+        return data.hits.hits.map(function(obj) {
+            return obj._source;
+        });
+        },
+        onSelect: function (data, $item) {
+        window.location = data.url;
+        }
+    });
+    </script>
+</div>
+<div class="clear"></div>
+
   <header class="article-header">
     <h1 class="article-title" itemprop="name">Build status-go</h1>
     <a href="https://github.com/status-im/docs.status.im/edit/develop/source/build_status/status_go.md" class="article-edit-link" title="이 문서에 참여하기">Edit on Github</a>
@@ -224,17 +248,18 @@
           <div class="article">
             <div class="inner">
               <div class="article-content" itemprop="articleBody">
-                <h2 id="Introduction" class="article-heading"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction<a class="article-anchor" href="#Introduction" aria-hidden="true"></a></h2><p>status-go is an underlying part of Status. It uses a lightly patched version of the <a href="https://github.com/ethereum/go-ethereum" target="_blank" rel="noopener">go-ethereum</a> node, located under <code>vendor/</code> directory. See <a href="https://github.com/status-im/status-go/blob/develop/_assets/patches/geth/README.md" target="_blank" rel="noopener">geth patches README</a> for more info.</p>
+                <h2 id="Introduction" class="article-heading"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction<a class="article-anchor" href="#Introduction" aria-hidden="true"></a></h2><p>status-go is an underlying part of Status. It heavily depends on <a href="https://github.com/ethereum/go-ethereum" target="_blank" rel="noopener">go-ethereum</a> which is <a href="https://github.com/status-im/go-ethereum" target="_blank" rel="noopener">forked</a> and slightly modified by us.</p>
 <p>The project output can take several forms:</p>
 <ul>
 <li><p>A cross-platform static library providing Status bindings for go-ethereum, ready to be used in other Go projects, or in <a href="https://github.com/status-im/status-react" target="_blank" rel="noopener">status-react</a> through <a href="https://golang.org/cmd/cgo/" target="_blank" rel="noopener">cgo</a>.</p>
-<p><strong>NOTE</strong>: Normally <code>status-react</code> uses a precompiled version of <code>status-go</code>, but you can build a custom version of <code>status-go</code> to include in <code>status-react</code> (see how-to in <a href="">TODO</a>);</p>
+<p><strong>NOTE</strong>: Normally <code>status-react</code> uses a precompiled version of <code>status-go</code>, but you can build a custom version of <code>status-go</code> to include in <code>status-react</code> (see how-to in <a href="https://status.im/build_status/#Locally-built-status-go-dependency" target="_blank" rel="noopener">Build Status Yourself</a>);</p>
 </li>
 <li>A command line interface, which can be used to run a full, LES or ULC node, with support for Whisper mailserver functionality;</li>
 <li>A command line tool to test availability of a given Whisper mailserver (used to check uptime of the Status cluster).</li>
 </ul>
 <h2 id="Build-status-go" class="article-heading"><a href="#Build-status-go" class="headerlink" title="Build status-go"></a>Build status-go<a class="article-anchor" href="#Build-status-go" aria-hidden="true"></a></h2><h3 id="1-Requirements" class="article-heading"><a href="#1-Requirements" class="headerlink" title="1. Requirements"></a>1. Requirements<a class="article-anchor" href="#1-Requirements" aria-hidden="true"></a></h3><ul>
 <li>Go version 1.10;</li>
+<li>Set <code>GOPATH</code>;</li>
 <li>Docker (only if cross-compiling).</li>
 </ul>
 <h3 id="2-Clone-the-repository" class="article-heading"><a href="#2-Clone-the-repository" class="headerlink" title="2. Clone the repository"></a>2. Clone the repository<a class="article-anchor" href="#2-Clone-the-repository" aria-hidden="true"></a></h3><pre><code class="shell">git clone https://github.com/status-im/status-go
@@ -246,10 +271,12 @@ cd status-go
 </code></pre>
 <p>This script prepares and installs the following:</p>
 <ul>
-<li><a href="github.com/golang/mock/mockgen">mockgen</a></li>
-<li><a href="github.com/kevinburke/go-bindata/go-bindata">go-bindata</a></li>
+<li><a href="https://github.com/golang/dep/cmd/dep" target="_blank" rel="noopener">dep</a></li>
+<li><a href="https://github.com/golang/mock/mockgen" target="_blank" rel="noopener">mockgen</a></li>
+<li><a href="https://github.com/kevinburke/go-bindata/go-bindata" target="_blank" rel="noopener">go-bindata</a></li>
 <li><a href="https://github.com/golangci/golangci-lint" target="_blank" rel="noopener">golangci-lint</a></li>
 <li><a href="https://github.com/protocolbuffers/protobuf" target="_blank" rel="noopener">protobuf compiler</a></li>
+<li><a href="https://github.com/c4milo/github-release" target="_blank" rel="noopener">github-release</a></li>
 </ul>
 <h3 id="4-Build-the-statusd-CLI" class="article-heading"><a href="#4-Build-the-statusd-CLI" class="headerlink" title="4. Build the statusd CLI"></a>4. Build the statusd CLI<a class="article-anchor" href="#4-Build-the-statusd-CLI" aria-hidden="true"></a></h3><p>To get started, let’s build the Ethereum node Command Line Interface tool, called <code>statusd</code>.</p>
 <pre><code class="shell">make statusgo
@@ -288,7 +315,7 @@ cd status-go
 </code></pre>
 <h3 id="5-Build-a-static-library" class="article-heading"><a href="#5-Build-a-static-library" class="headerlink" title="5. Build a static library"></a>5. Build a static library<a class="article-anchor" href="#5-Build-a-static-library" aria-hidden="true"></a></h3><pre><code class="shell">make statusgo-library
 </code></pre>
-<p>This command will build a status-go library for the host platform under <code>build/bin/libstatus.a</code>. You can also cross compile for different platforms using the appropriate <code>make</code> commands, e.g. <code>make statusgo-android</code>, <code>make statusgo-linux</code>, etc. These will be built in a Docker container using <code>xgo</code>.</p>
+<p>This command will build a status-go library for the host platform under <code>build/bin/libstatus.a</code>. You can also cross compile for different platforms using the appropriate <code>make</code> commands, e.g. <code>make statusgo-android</code>, <code>make statusgo-linux</code>, etc. These will be built in a Docker container using <code>xgo</code>, which can be obtained by running <code>make xgo</code>.</p>
 <h3 id="6-Build-a-bootnode" class="article-heading"><a href="#6-Build-a-bootnode" class="headerlink" title="6. Build a bootnode"></a>6. Build a bootnode<a class="article-anchor" href="#6-Build-a-bootnode" aria-hidden="true"></a></h3><p>A bootnode is a regular Ethereum node which runs only discovery (DevP2P is disabled). It is used as a first connection point for Ethereum nodes to discover other peers in the network.</p>
 <p>One reason you might want to run a bootnode build instead of a node with LES/Whisper enabled, is that it will be more forgiving in terms of version mismatches, as discovery happens on a different layer.</p>
 <pre><code class="shell">make bootnode
@@ -321,7 +348,7 @@ cd status-go
 
               </div>
               <footer class="article-footer">
-                <time class="article-footer-updated" datetime="2018-12-07T09:15:09.514Z" itemprop="dateModified">마지막 업데이트: 2018-12-07</time>
+                <time class="article-footer-updated" datetime="2018-12-18T03:39:13.080Z" itemprop="dateModified">마지막 업데이트: 2018-12-18</time>
                 
               </footer>
             </div>

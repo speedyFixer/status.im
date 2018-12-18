@@ -206,6 +206,30 @@
 
     
     <div class="page-intro wrapper">
+<div class="search">
+    <input type="text" name="userSearch" id="userSearch" placeholder="Search...">
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/jquery.marcopolo.min.js" type="text/javascript"></script>
+    <script type="text/javascript" defer>
+    $('#userSearch').marcoPolo({
+        url: 'https://search.status.im/' + window.location.host + '/_search?size=5&_source=title,url&',
+        minChars: 3,
+        formatItem: function (data, $item) {
+        return data.title || data.url;
+        },
+        formatData: function (data) {
+        return data.hits.hits.map(function(obj) {
+            return obj._source;
+        });
+        },
+        onSelect: function (data, $item) {
+        window.location = data.url;
+        }
+    });
+    </script>
+</div>
+<div class="clear"></div>
+
   <header class="article-header">
     <h1 class="article-title" itemprop="name">Extension Reference - Views</h1>
     <a href="https://github.com/status-im/docs.status.im/edit/develop/source/extensions/reference_views.md" class="article-edit-link" title="이 문서에 참여하기">Edit on Github</a>
@@ -246,6 +270,10 @@
 <td>style, on-press :event</td>
 </tr>
 <tr>
+<td>icon</td>
+<td>style, key :keyword, color :keyword</td>
+</tr>
+<tr>
 <td>image</td>
 <td>style, uri :string</td>
 </tr>
@@ -262,8 +290,20 @@
 <td>style, uri :string</td>
 </tr>
 <tr>
+<td>list</td>
+<td>style, data :vector, item-view :view, key? :keyword</td>
+</tr>
+<tr>
 <td>checkbox</td>
-<td>style, on-change :event, checked: boolean</td>
+<td>style, on-change :event, checked :boolean</td>
+</tr>
+<tr>
+<td>activity-indicator</td>
+<td>style, animating :boolean, color: string, size :keyword</td>
+</tr>
+<tr>
+<td>picker</td>
+<td>style, on-change :event, selected :string, enabled :boolean, data :vector</td>
 </tr>
 </tbody>
 </table>
@@ -274,7 +314,7 @@
 
               </div>
               <footer class="article-footer">
-                <time class="article-footer-updated" datetime="2018-12-07T09:15:09.522Z" itemprop="dateModified">마지막 업데이트: 2018-12-07</time>
+                <time class="article-footer-updated" datetime="2018-12-18T03:39:13.080Z" itemprop="dateModified">마지막 업데이트: 2018-12-18</time>
                 
               </footer>
             </div>
